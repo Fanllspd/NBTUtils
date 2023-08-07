@@ -1,14 +1,29 @@
 {
-  "name": "nbt",
+  "name": "nbtutils",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "Utils for easy parsing nbt files",
+  "main": "nbt.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd ./examples && node test.js"
   },
   "author": "Fanllspd",
-  "license": "ISC",
-  "dependencies": {
+  "license": "GPL-3.0",
+  "directories": {
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fanllspd/NBTUtils.git"
+  },
+  "keywords": [
+    "nbt",
+    "minecraft"
+  ],
+  "bugs": {
+    "url": "https://github.com/Fanllspd/NBTUtils/issues"
+  },
+  "homepage": "https://github.com/Fanllspd/NBTUtils#readme",
+  "devDependencies": {
     "@types/node": "^20.4.8"
   }
 }
