@@ -1,0 +1,191 @@
+{
+	"Level": {
+		"type": "TAG_Compound",
+		"value": {
+			"longArray": {
+				"type": "TAG_Long_Array",
+				"value": [
+					"1",
+					"2",
+					"3",
+					"4",
+					"5"
+				]
+			},
+			"long": {
+				"type": "TAG_Long",
+				"value": "4"
+			},
+			"double": {
+				"type": "TAG_Double",
+				"value": 1
+			},
+			"float": {
+				"type": "TAG_Float",
+				"value": 2
+			},
+			"byteArray": {
+				"type": "TAG_Byte_Array",
+				"value": [
+					0,
+					1,
+					2,
+					3,
+					4
+				]
+			},
+			"intArray": {
+				"type": "TAG_Int_Array",
+				"value": [
+					0,
+					1,
+					2,
+					3,
+					4,
+					5,
+					6,
+					7,
+					8,
+					9
+				]
+			},
+			"short": {
+				"type": "TAG_Short",
+				"value": 5
+			},
+			"int": {
+				"type": "TAG_Int",
+				"value": 3
+			},
+			"intList": {
+				"type": "TAG_List",
+				"value": {
+					"type": "TAG_Int",
+					"value": [
+						0,
+						0,
+						0
+					]
+				}
+			},
+			"string": {
+				"type": "TAG_String",
+				"value": "Hello Wolrd!"
+			},
+			"nestedCompoundTEST": {
+				"type": "TAG_Compound",
+				"value": {
+					"a": {
+						"type": "TAG_Compound",
+						"value": {
+							"b": {
+								"type": "TAG_Compound",
+								"value": {
+									"c": {
+										"type": "TAG_Compound",
+										"value": {}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"byteList": {
+				"type": "TAG_List",
+				"value": {
+					"type": "TAG_Byte",
+					"value": [
+						0,
+						0,
+						0
+					]
+				}
+			},
+			"byte": {
+				"type": "TAG_Byte",
+				"value": 0
+			},
+			"shortList": {
+				"type": "TAG_List",
+				"value": {
+					"type": "TAG_Short",
+					"value": [
+						0,
+						0,
+						0
+					]
+				}
+			},
+			"longList": {
+				"type": "TAG_List",
+				"value": {
+					"type": "TAG_Long",
+					"value": [
+						"0",
+						"0",
+						"0"
+					]
+				}
+			},
+			"floatList": {
+				"type": "TAG_List",
+				"value": {
+					"type": "TAG_Float",
+					"value": [
+						0,
+						0,
+						0
+					]
+				}
+			},
+			"doubleList": {
+				"type": "TAG_List",
+				"value": {
+					"type": "TAG_Double",
+					"value": [
+						0,
+						0,
+						0
+					]
+				}
+			},
+			"compoundListAcross": {
+				"type": "TAG_List",
+				"value": {
+					"type": "TAG_Compound",
+					"value": [
+						{
+							"1": {
+								"type": "TAG_List",
+								"value": {
+									"type": "TAG_Compound",
+									"value": [
+										{
+											"2.1": {
+												"type": "TAG_List",
+												"value": {
+													"type": "TAG_Byte",
+													"value": []
+												}
+											}
+										},
+										{
+											"2.2": {
+												"type": "TAG_List",
+												"value": {
+													"type": "TAG_Byte",
+													"value": []
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				}
+			}
+		}
+	}
+}
