@@ -25,6 +25,7 @@ class NBTUtils {
             0x0c: 'TAG_Long_Array',
         };
     }
+
     Parse(path, ifGzip, callback) {
         let buf = fs.readFileSync(path);
         if (ifGzip) {
@@ -33,7 +34,6 @@ class NBTUtils {
                     console.log(err);
                     callback(err, null);
                 }
-                fs.writeFileSync('酒店', buffer);
                 this.buf = buffer;
                 let result = this.selectCmd(this.buf[0]);
                 callback(null, result);
@@ -45,9 +45,17 @@ class NBTUtils {
         }
     }
 
+    AutoParse(data, callback) {
+        this.buf = data;
+        let result = this.selectCmd(this.buf[0]);
+        callback(null, result);
+    }
+
     selectCmd(tagByte) {
+        //console.log(tagByte);
         let tagName;
         let value;
+        let tagType = this.tagList[tagByte];
         if (tagByte != 0x00 && this.ifList == false) {
             this.offset += 1;
             tagName = this.readString();
@@ -59,30 +67,56 @@ class NBTUtils {
             case 0x01: // TAG_Byte
                 value = this.readInt8();
                 return {
-                    [tagName]: value,
+                    [tagName]: {
+                        type: tagType,
+                        value: value,
+                    },
                 };
 
             case 0x02: // TAG_Short
                 value = this.readInt16();
                 return {
-                    [tagName]: value,
+                    [tagName]: {
+                        type: tagType,
+                        value: value,
+                    },
                 };
 
             case 0x03: // TAG_Int
                 value = this.readInt32();
-                return { [tagName]: value };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: value,
+                    },
+                };
 
             case 0x04: // TAG_Long
                 value = this.readInt64();
-                return { [tagName]: value };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: value,
+                    },
+                };
 
             case 0x05: // TAG_Float
                 value = this.readFloat();
-                return { [tagName]: value };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: value,
+                    },
+                };
 
             case 0x06: // TAG_Double
                 value = this.readDouble();
-                return { [tagName]: value };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: value,
+                    },
+                };
 
             case 0x07: // TAG_Byte_Array
                 let byteArrLen = this.readInt32();
@@ -91,11 +125,21 @@ class NBTUtils {
                     let byte = this.readInt8();
                     byteArr.push(byte);
                 }
-                return { [tagName]: byteArr };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: byteArr,
+                    },
+                };
 
             case 0x08: // TAG_String
                 value = this.readString();
-                return { [tagName]: value };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: value,
+                    },
+                };
 
             case 0x09: // TAG_List
                 let listObj = [];
@@ -103,17 +147,25 @@ class NBTUtils {
                 let listLen = this.readInt32();
                 this.ifList = true;
                 for (let i = 0; i < listLen; i++) {
-                    listObj.push(Object.values(this.selectCmd(tagId))[0]);
+                    listObj.push(Object.values(this.selectCmd(tagId))[0].value);
                 }
                 this.ifList = false;
-                return { [tagName]: listObj };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: {
+                            type: this.tagList[tagId],
+                            value: listObj,
+                        },
+                    },
+                };
 
             case 0x0a: // TAG_Compound
                 this.index += 1; // add new compound
                 this.compoundEnd[this.index] = false; // Initialize the current level
                 let list = this.ifList;
                 if (list) {
-                    tagName = 'entry 1';
+                    tagName = `entry ${this.index}`;
                     this.ifList = false;
                 }
                 this.obj[tagName] = {};
@@ -124,11 +176,7 @@ class NBTUtils {
                         this.offset += 1;
                     } else {
                         let objj = this.selectCmd(this.buf[this.offset]); // Recursion produces a Tree Structure
-                        Object.assign(
-                            this.obj[tagName],
-                            // type: this.tagList[this.buf[this.offset]], // TODO: Log types
-                            objj,
-                        );
+                        Object.assign(this.obj[tagName], objj);
                     }
                 }
 
@@ -137,7 +185,13 @@ class NBTUtils {
                 }
 
                 this.index -= 1; // Decrease level in order
-                return { [tagName]: this.obj[tagName] };
+
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: this.obj[tagName],
+                    },
+                };
 
             case 0x0b: // TAG_Int_Array
                 let intArrLen = this.readInt32();
@@ -147,7 +201,12 @@ class NBTUtils {
                     let int = this.readInt32();
                     intArr.push(int);
                 }
-                return { [tagName]: intArr };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: intArr,
+                    },
+                };
 
             case 0x0c: // TAG_Long_Array
                 let longArrLen = this.readInt32();
@@ -157,7 +216,12 @@ class NBTUtils {
                     let long = this.readInt64();
                     longArr.push(long);
                 }
-                return { [tagName]: longArr };
+                return {
+                    [tagName]: {
+                        type: tagType,
+                        value: longArr,
+                    },
+                };
         }
     }
 
@@ -191,7 +255,7 @@ class NBTUtils {
                 ? this.buf.readBigInt64BE(this.offset)
                 : this.buf.readBigInt64LE(this.offset);
         this.offset += 8;
-        return value;
+        return value.toString();
     }
 
     readFloat() {
@@ -213,7 +277,10 @@ class NBTUtils {
     }
 
     getNameLength() {
-        let len = this.buf.readUint16BE(this.offset);
+        let len =
+            this.endian == 'BE'
+                ? this.buf.readUint16BE(this.offset)
+                : this.buf.readUint16LE(this.offset);
         this.offset += 2;
         return len;
     }
